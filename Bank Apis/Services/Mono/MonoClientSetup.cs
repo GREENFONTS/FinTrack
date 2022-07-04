@@ -7,7 +7,7 @@ namespace Bank_Apis.Services.Mono
     {
         public readonly MonoClient client;
 
-        private readonly string secret_key = "live_sk_jdrysL9K5fH7fRwms7Nn";
+        private readonly string secret_key = "your mono secret key";
 
         public MonoClientSetup()
         {
