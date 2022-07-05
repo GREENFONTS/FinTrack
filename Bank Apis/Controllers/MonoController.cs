@@ -32,7 +32,7 @@ namespace Bank_Apis.Controllers
             {
                 return null;
             }
-            var accountId = await _monoActions.GetAccountId(code);
+            var accountId = await _monoActions.GetAccountId(code, branch.UserId);
 
             if(accountId == null)
             {
@@ -49,75 +49,46 @@ namespace Bank_Apis.Controllers
         [HttpGet]
         [Route("AccountInfo")]
         [Authorize]
-        public async Task<string> GetAccountInfos(string branchId)
+        public async Task<string> GetAccountInfos(string userId)
         {
-            var branch = _branchActions.GetBranch(branchId);
-
-            if (branch == null)
-            {
-                return null;
-            }
-            var accountInfo = await _monoActions.GetAccountInfo(branch.AccountId);
+            var accountInfo = await _monoActions.GetAccountInfo(userId);
             return accountInfo;
         }
 
         [HttpGet]
         [Route("AccountStatement/")]
         [Authorize]
-        public async Task<string> GetAccountStatement(string branchId)
+        public async Task<string> GetAccountStatement(string userId)
         {
-            var branch = _branchActions.GetBranch(branchId);
-
-            if (branch == null)
-            {
-                return null;
-            }
-            var accountStatement = await _monoActions.GetAccountStatement(branch.AccountId);
+            var accountStatement = await _monoActions.GetAccountStatement(userId);
             return accountStatement;
         }
 
         [HttpGet]
         [Route("AccountStatement/(period)")]
         [Authorize]
-        public async Task<string> GetAccountStatement(string branchId, int period)
+        public async Task<string> GetAccountStatement(string accountId, int period)
         {
-            var branch = _branchActions.GetBranch(branchId);
-
-            if (branch == null)
-            {
-                return null;
-            }
-            var accountStatement = await _monoActions.GetAccountStatement(branch.AccountId, period);
+            var accountStatement = await _monoActions.GetAccountStatement(accountId, period);
             return accountStatement;
         }
 
         [HttpGet]
         [Route("Transactions/")]
         [Authorize]
-        public async Task<string> GetTransactions(string branchId)
+        public async Task<string> GetTransactions(string accountId)
         {
-            var branch = _branchActions.GetBranch(branchId);
-
-            if (branch == null)
-            {
-                return null;
-            }
-            var transactions = await _monoActions.GetTransactions(branch.AccountId);
+            Console.WriteLine(accountId);
+            var transactions = await _monoActions.GetTransactions(accountId);
             return transactions;
         }
 
         [HttpGet]
         [Route("AccountIdentity/")]
         [Authorize]
-        public async Task<string> GetAccountIdentity(string branchId)
+        public async Task<string> GetAccountIdentity(string accountId)
         {
-            var branch = _branchActions.GetBranch(branchId);
-
-            if (branch == null)
-            {
-                return null;
-            }
-            var accountIdentity = await _monoActions.GetAccountIdentity(branch.AccountId);
+            var accountIdentity = await _monoActions.GetAccountIdentity(accountId);
             return accountIdentity;
         }
 
@@ -125,60 +96,36 @@ namespace Bank_Apis.Controllers
         [HttpGet]
         [Route("Income/")]
         [Authorize]
-        public async Task<string> GetAccountIncome(string branchId)
+        public async Task<string> GetAccountIncome(string accountId)
         {
-            var branch = _branchActions.GetBranch(branchId);
-
-            if (branch == null)
-            {
-                return null;
-            }
-            var Income = await _monoActions.GetIncome(branch.AccountId);
+            var Income = await _monoActions.GetIncome(accountId);
             return Income;
         }
 
         [HttpGet]
         [Route("/UnlinkAccount")]
         [Authorize]
-        public async Task<string> UnlinkAccount(string branchId)
+        public async Task<string> UnlinkAccount(string accountId)
         {
-            var branch = _branchActions.GetBranch(branchId);
-
-            if (branch == null)
-            {
-                return null;
-            }
-            var Income = await _monoActions.UnlinkAccount(branch.AccountId);
+            var Income = await _monoActions.UnlinkAccount(accountId);
             return Income;
         }
 
         [HttpGet]
         [Route("/ManualSync")]
         [Authorize]
-        public async Task<string> ManualSync(string branchId)
+        public async Task<string> ManualSync(string accountId)
         {
-            var branch = _branchActions.GetBranch(branchId);
-
-            if (branch == null)
-            {
-                return null;
-            }
-            var Data = await _monoActions.ManualSync(branch.AccountId);
+            var Data = await _monoActions.ManualSync(accountId);
             return Data;
         }
 
         [HttpGet]
         [Route("/ReAuth")]
         [Authorize]
-        public async Task<string> ReAuth(string branchId)
+        public async Task<string> ReAuth(string accountId)
         {
-            var branch = _branchActions.GetBranch(branchId);
-
-            if (branch == null)
-            {
-                return null;
-            }
-            var AuthCode = await _monoActions.ReAuth(branch.AccountId);
+            var AuthCode = await _monoActions.ReAuth(accountId);
             return AuthCode;
         }
 

@@ -12,6 +12,8 @@ namespace Bank_Apis.Model
         public DbSet<User> Users { get; set; }
 
         public DbSet<Branch> Branches { get; set;}
+
+        public DbSet<ServiceKeys> ServiceKeys { get; set; }
     }
 
 }

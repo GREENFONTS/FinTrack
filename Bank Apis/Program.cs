@@ -2,9 +2,9 @@ using Bank_Apis.Model;
 using Bank_Apis.Services.Branches;
 using Bank_Apis.Services.Mono;
 using Bank_Apis.Services.Users;
+using Bank_Apis.Services.FlutterWave;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserAuthenticationInterface, UserAuthenticationActions>();
 builder.Services.AddScoped<IBranchInterface, BranchActions>();
 builder.Services.AddScoped<IMonoAccountInterface, MonoAccountActions>();
+builder.Services.AddScoped<IFlutterwaveActionInterface, FlutterwaveAccountActions>();
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -49,7 +51,11 @@ builder.Services.AddSwaggerGen(c =>
     }
   });
 });
-//builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+{
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
 
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -77,6 +83,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("corsapp");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

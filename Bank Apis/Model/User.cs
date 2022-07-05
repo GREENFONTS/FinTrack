@@ -12,7 +12,7 @@ namespace Bank_Apis.Model
         public string Id { get; set; } = null!;
 
         [MaxLength(20)]
-        public string FirstName { get; set; } = null;
+        public string FirstName { get; set; } = null!;
 
         [MaxLength(20)]
         public string LastName { get; set; } = null!;

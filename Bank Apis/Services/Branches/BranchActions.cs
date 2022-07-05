@@ -4,12 +4,10 @@ namespace Bank_Apis.Services.Branches
 {
     public class BranchActions : IBranchInterface
     {
-            private readonly DatabaseContext _dbClient;
-            private readonly IConfiguration _configuration;
+        private readonly DatabaseContext _dbClient;
 
         public BranchActions(IConfiguration iconfiguration, DatabaseContext _client)
          {
-                _configuration = iconfiguration;
                 _dbClient = _client;
 
          }

@@ -42,7 +42,7 @@ namespace Bank_Apis.Services.Users
 
         public async Task<User> GetUser(string Id)
         {
-            var user = await _dbClient.Users.FirstOrDefaultAsync(x => x.Id == Id);
+            var user = await _dbClient.Users.FirstOrDefaultAsync(x => x.Id == Id);         
             return user;
         }
 
@@ -63,8 +63,37 @@ namespace Bank_Apis.Services.Users
             return token;
         }
 
+        public async Task<User> UpdateUser(string Id, User user)
+        {
+            var currentUser = _dbClient.Users.SingleOrDefault(x => x.Id == Id);
+            if (currentUser == null)
+            {
+                return null;
+            }
+            else
+            {
+                _dbClient.Entry(currentUser).CurrentValues.SetValues(user);
+                await _dbClient.SaveChangesAsync();
+                return user;
+            }
 
+        }
 
+        public async Task<ServiceKeys> AddAccountKeys(ServiceKeys serviceKeys)
+        {
+            var user = await _dbClient.Users.FindAsync(serviceKeys.UserId);
+            
+            if(user == null)
+            {
+                return null;
+            }
+            else
+            {
+                _dbClient.ServiceKeys.Add(serviceKeys);
+                await _dbClient.SaveChangesAsync();
 
+                return serviceKeys;
+            }
+        }
     }
 }

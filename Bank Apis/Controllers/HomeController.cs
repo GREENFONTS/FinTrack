@@ -1,6 +1,8 @@
 ﻿using Bank_Apis.Model;
 using Bank_Apis.Services.Users;
 using Bank_Apis.Utils;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bank_Apis.Controllers
@@ -25,7 +27,7 @@ namespace Bank_Apis.Controllers
         }
 
         [HttpPost]
-        [Route("/register")]
+        [Route("register")]
         public async Task<KeyValuePair<string, object>[]> Register(User _user)
         {
             _user.Id = Guid.NewGuid().ToString();
@@ -46,14 +48,14 @@ namespace Bank_Apis.Controllers
         }
 
         [HttpPost]
-        [Route("/login")]
-        public async Task<KeyValuePair<string, object>[]> Login(string email, string password)
+        [Route("login")]
+        public async Task<KeyValuePair<string, object>[]> Login(LoginModel _loginData)
         {
-            var user = await _userActions.GetUserViaEmail(email);
+            var user = await _userActions.GetUserViaEmail(_loginData.Email);
 
             if (user != null)
             {
-                bool checkPassword = PasswordHash.VerifyHash(user.Password, password);
+                bool checkPassword = PasswordHash.VerifyHash(user.Password, _loginData.Password);
                 
                 if (checkPassword)
                 {
@@ -81,6 +83,31 @@ namespace Bank_Apis.Controllers
                     new KeyValuePair<string, object>("state", "User not Found")}; ;
         }
 
-        
+        [HttpPut("Id")]
+        [Authorize]
+        public async Task<User> UpdateUser(string Id, User user)
+        {
+            var UpdatedUser = await _userActions.UpdateUser(Id, user);
+            return UpdatedUser;
+        }
+
+        [HttpPost]
+        [Route("/AddServiceKeys")]
+        [Authorize]
+        public async Task<KeyValuePair<string, object>[]> AddServiceKeys(ServiceKeys _servicekey)
+        {
+            var serviceKey = await _userActions.AddAccountKeys(_servicekey);
+            if (serviceKey == null)
+            {
+                var res = new[] {
+                    new KeyValuePair<string, object>("serviceKey", null),
+                    new KeyValuePair<string, object>("state", "User does not exists")};
+                return res;
+            }
+            return new[] {
+                    new KeyValuePair<string, object>("servicekey", serviceKey),
+                    new KeyValuePair<string, object>("state", "Success")}; ;
+        }
+
     }
 }

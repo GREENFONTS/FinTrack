@@ -21,12 +21,6 @@ namespace Bank_Apis.Model
         public string UserId { get; set; } = null!;
 
         [MaxLength(30)]
-        public string SecretKey { get; set; } = null;
-
-        [MaxLength(30)]
-        public string PublicKey { get; set; } = null;
-
-        [MaxLength(30)]
         public string AccountId { get; set; } = null;
 
 

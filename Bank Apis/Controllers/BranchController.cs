@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bank_Apis.Controllers
 {
-    [Route("api/Branch/")]
+    [Route("api/user/Branch/")]
     [ApiController]
     public class BranchController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace Bank_Apis.Controllers
         }
 
         [HttpPost]
-        [Route("/api/create")]
+        [Route("create")]
         [Authorize]
         public async Task<KeyValuePair<string, object>[]> Register(Branch _branch)
         {

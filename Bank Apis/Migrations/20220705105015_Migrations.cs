@@ -17,13 +17,24 @@ namespace Bank_Apis.Migrations
                     Address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SecretKey = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    PublicKey = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     AccountId = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Branches", x => x.BranchId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ServiceKeys",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MonoKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FlutterKey = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServiceKeys", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,6 +65,9 @@ namespace Bank_Apis.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Branches");
+
+            migrationBuilder.DropTable(
+                name: "ServiceKeys");
 
             migrationBuilder.DropTable(
                 name: "Users");

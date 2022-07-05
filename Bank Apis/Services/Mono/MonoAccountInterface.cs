@@ -5,7 +5,7 @@ namespace Bank_Apis.Services.Mono
     public interface IMonoAccountInterface
     {
 
-        public Task<string> GetAccountId(string code);
+        public Task<string> GetAccountId(string code, string UserId);
         public Task<string> GetAccountInfo(string accountId);
 
         public Task<string> GetAccountStatement(string accountId);
