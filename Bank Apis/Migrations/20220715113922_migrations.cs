@@ -4,7 +4,7 @@
 
 namespace Bank_Apis.Migrations
 {
-    public partial class Migrations : Migration
+    public partial class migrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,7 +29,8 @@ namespace Bank_Apis.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MonoKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MonoPrivateKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MonoSecretKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FlutterKey = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>

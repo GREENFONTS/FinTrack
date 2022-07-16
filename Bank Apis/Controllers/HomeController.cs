@@ -4,6 +4,7 @@ using Bank_Apis.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Bank_Apis.Controllers
 {
@@ -19,16 +20,10 @@ namespace Bank_Apis.Controllers
             _userActions = userActions;
         }
 
-        [HttpGet]
-        public IEnumerable<User> GetUsers()
-        {
-            var users = _userActions.GetUsers();
-            return users;
-        }
-
+       
         [HttpPost]
         [Route("register")]
-        public async Task<KeyValuePair<string, object>[]> Register(User _user)
+        public async Task<IActionResult> Register(User _user)
         {
             _user.Id = Guid.NewGuid().ToString();
             _user.Password = PasswordHash.HashPassword(_user.Password);
@@ -37,19 +32,25 @@ namespace Bank_Apis.Controllers
             var user = await _userActions.CreateUserAsync(_user);
             if(user == null)
             {
-                var res = new[] {
-                    new KeyValuePair<string, object>("user", null),
-                    new KeyValuePair<string, object>("state", "Email/UserName already exists")};
-                return res;
+                ModelState.AddModelError("404", "Username or Email already Exists");
+                return NotFound(ModelState);
+
+               
             }
-            return new[] {
-                    new KeyValuePair<string, object>("user", user),
-                    new KeyValuePair<string, object>("state", "Success")}; ;
+            var token = _userActions.GetToken(user.Email, user.Id);
+            return Ok(
+                    new
+                    {
+                        user,
+                        token,
+                        status = 200
+                    }
+                    );
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<KeyValuePair<string, object>[]> Login(LoginModel _loginData)
+        public async Task<IActionResult> Login(LoginModel _loginData)
         {
             var user = await _userActions.GetUserViaEmail(_loginData.Email);
 
@@ -60,27 +61,25 @@ namespace Bank_Apis.Controllers
                 if (checkPassword)
                 {
                     var token = _userActions.GetToken(user.Email, user.Id);
-                    var res = new[] {
-                    new KeyValuePair<string, object>("token", token),
-                    new KeyValuePair<string, object>("user", user),
-                    new KeyValuePair<string, object>("state", "Success")};
+                    var monoKey = _userActions.GetServiceKey(user.Id);
+                    return Ok(new
+                    {
+                        token, 
+                        user,
+                        monoKey
+                    }
 
-                    return res;
+                    );
                 }
                 else
                 {
-                    var res = new[] {
-                    new KeyValuePair<string, object>("token", null),
-                    new KeyValuePair<string, object>("user", null),
-                    new KeyValuePair<string, object>("state", "Password is Incorrect")};
-
-                    return res;
+                    ModelState.AddModelError("404", "Password is Incorrect");
+                    return NotFound(ModelState);
                 }
             }
-            return new[] {
-                    new KeyValuePair<string, object>("token", null),
-                    new KeyValuePair<string, object>("user", null),
-                    new KeyValuePair<string, object>("state", "User not Found")}; ;
+
+            ModelState.AddModelError("404", "User not Found");
+            return NotFound(ModelState);
         }
 
         [HttpPut("Id")]
@@ -92,21 +91,29 @@ namespace Bank_Apis.Controllers
         }
 
         [HttpPost]
-        [Route("/AddServiceKeys")]
+        [Route("AddServiceKeys")]
         [Authorize]
-        public async Task<KeyValuePair<string, object>[]> AddServiceKeys(ServiceKeys _servicekey)
+        public async Task<IActionResult> AddServiceKeys(ServiceKeys _servicekey)
         {
             var serviceKey = await _userActions.AddAccountKeys(_servicekey);
             if (serviceKey == null)
             {
-                var res = new[] {
-                    new KeyValuePair<string, object>("serviceKey", null),
-                    new KeyValuePair<string, object>("state", "User does not exists")};
-                return res;
+                ModelState.AddModelError("404", "User does not exists");
+                return NotFound(ModelState);
+              
             }
-            return new[] {
-                    new KeyValuePair<string, object>("servicekey", serviceKey),
-                    new KeyValuePair<string, object>("state", "Success")}; ;
+            return Ok(new
+            {
+                serviceKey.MonoPrivateKey
+            });
+        }
+
+        [HttpGet]
+        [Route("verifyToken")]
+        public bool VerifyToken(string token)
+        {
+            var res = _userActions.VerifyToken(token);
+            return res;
         }
 
     }

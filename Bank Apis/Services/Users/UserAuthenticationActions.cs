@@ -54,7 +54,7 @@ namespace Bank_Apis.Services.Users
         }
 
         
-        public string GetToken(string email, string Id)
+        public string[] GetToken(string email, string Id)
         {
             var classInstance = new GenerateToken(_configuration);
 
@@ -81,19 +81,46 @@ namespace Bank_Apis.Services.Users
 
         public async Task<ServiceKeys> AddAccountKeys(ServiceKeys serviceKeys)
         {
-            var user = await _dbClient.Users.FindAsync(serviceKeys.UserId);
-            
-            if(user == null)
+            var checkKeys = await _dbClient.ServiceKeys.FindAsync(serviceKeys.UserId);
+            if (checkKeys != null)
             {
-                return null;
+                return checkKeys;
             }
             else
             {
-                _dbClient.ServiceKeys.Add(serviceKeys);
-                await _dbClient.SaveChangesAsync();
 
-                return serviceKeys;
+                var user = await _dbClient.Users.FindAsync(serviceKeys.UserId);
+
+                if (user == null)
+                {
+                    return null;
+                }
+                else
+                {
+
+                    _dbClient.ServiceKeys.Add(serviceKeys);
+                    await _dbClient.SaveChangesAsync();
+
+                    return serviceKeys;
+                }
             }
+
+        }
+
+        public bool VerifyToken(string token)
+        {
+            var classInstance = new VerifyToken(_configuration);
+
+            var res = classInstance.verifyToken(token);
+
+            return res;
+        }
+
+        public string GetServiceKey(string Id)
+        {
+            var serviceKey = _dbClient.ServiceKeys.Find(Id);
+
+            return serviceKey.MonoPrivateKey;
         }
     }
 }

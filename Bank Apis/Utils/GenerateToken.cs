@@ -14,7 +14,7 @@ namespace Bank_Apis.Utils
             _configuration = iconfiguration;
         }
 
-        public string GetToken(string email, string Id)
+        public string[] GetToken(string email, string Id)
         {
             var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
@@ -30,10 +30,16 @@ namespace Bank_Apis.Utils
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: DateTime.UtcNow.AddMinutes(180),
                 signingCredentials: signIn);
+            var expires = DateTime.UtcNow.AddMinutes(180).ToString();
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new[]
+            {
+                new JwtSecurityTokenHandler().WriteToken(token),
+                expires
+            };
+           
         }
     }
 }

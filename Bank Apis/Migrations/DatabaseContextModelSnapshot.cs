@@ -63,7 +63,11 @@ namespace Bank_Apis.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MonoKey")
+                    b.Property<string>("MonoPrivateKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MonoSecretKey")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

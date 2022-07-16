@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bank_Apis.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220705105015_Migrations")]
-    partial class Migrations
+    [Migration("20220715113922_migrations")]
+    partial class migrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -65,7 +65,11 @@ namespace Bank_Apis.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MonoKey")
+                    b.Property<string>("MonoPrivateKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MonoSecretKey")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

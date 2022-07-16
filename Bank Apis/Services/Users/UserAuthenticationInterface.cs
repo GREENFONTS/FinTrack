@@ -14,9 +14,12 @@ namespace Bank_Apis.Services.Users
 
         public Task<User> GetUserViaEmail(string email);
 
-        public string GetToken(string email, string Id);
+        public string[] GetToken(string email, string Id);
 
+        public bool VerifyToken(string token);
         public Task<ServiceKeys> AddAccountKeys(ServiceKeys serviceKeys);
+
+        public string GetServiceKey(string Id);
 
     }
 }

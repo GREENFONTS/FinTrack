@@ -18,8 +18,7 @@ namespace Bank_Apis.Services.Mono
         {
             _dbclient = client;
         }
-        //62c2b9c2ec4b9a0160c52fa3
-
+     
         public async Task<string> GetAccountId(string code, string UserId)
         {
             //Get the account Id
@@ -34,57 +33,69 @@ namespace Bank_Apis.Services.Mono
             return accountId;
         }
 
-        public async Task<string> GetAccountIdentity(string userId)
+        public async Task<string> GetAccountIdentity(string branchId)
         {
+            var userId = Utils.Monohelper.UserId(_dbclient, branchId);
             _client = _clientSetup.GetMonoClient(_dbclient, userId);
-            var accountId = Utils.GetAccountIdClass.AccountId(_dbclient, userId);
+
+            var accountId = Utils.Monohelper.AccountId(_dbclient, branchId);
 
             var response = await _client.Accounts.GetUserIdentity(accountId);
             return JsonConvert.SerializeObject(response.Data);
         }
 
-        public async Task<string> GetAccountInfo(string userId)
+        public async Task<string> GetAccountInfo(string branchId)
         {
+            var userId = Utils.Monohelper.UserId(_dbclient, branchId);
             _client = _clientSetup.GetMonoClient(_dbclient, userId);
-            var accountId = Utils.GetAccountIdClass.AccountId(_dbclient, userId);
+
+            var accountId = Utils.Monohelper.AccountId(_dbclient, branchId);
 
             var response = await _client.Accounts.GetInformation(accountId);
                return JsonConvert.SerializeObject(response.Data.Account);
             
         }
 
-        public async Task<string> GetAccountStatement(string userId)
+        public async Task<string> GetAccountStatement(string branchId)
         {
+            var userId = Utils.Monohelper.UserId(_dbclient, branchId);
             _client = _clientSetup.GetMonoClient(_dbclient, userId);
-            var accountId = Utils.GetAccountIdClass.AccountId(_dbclient, userId);
+
+            var accountId = Utils.Monohelper.AccountId(_dbclient, branchId);
             var response = await _client.Accounts.GetStatementsInJson(accountId);
 
             return JsonConvert.SerializeObject(response.Data.StatementList); 
         }
 
-        public async Task<string> GetAccountStatement(string userId, int period)
+        public async Task<string> GetAccountStatement(string branchId, int period)
         {
+            var userId = Utils.Monohelper.UserId(_dbclient, branchId);
             _client = _clientSetup.GetMonoClient(_dbclient, userId);
-            var accountId = Utils.GetAccountIdClass.AccountId(_dbclient, userId);
+
+            var accountId = Utils.Monohelper.AccountId(_dbclient, branchId);
             var response = await _client.Accounts.GetStatementsInJson(accountId, period);
             return JsonConvert.SerializeObject(response.Data.StatementList);
         }
 
-        public async Task<string> GetIncome(string userId)
+        public async Task<string> GetIncome(string branchId)
         {
+            var userId = Utils.Monohelper.UserId(_dbclient, branchId);
             _client = _clientSetup.GetMonoClient(_dbclient, userId);
-            var accountId = Utils.GetAccountIdClass.AccountId(_dbclient, userId);
+
+            var accountId = Utils.Monohelper.AccountId(_dbclient, branchId);
 
             var response = await _client.Accounts.GetIncome(accountId);
 
             return JsonConvert.SerializeObject(response.Data);
         }
 
-        public async Task<string> GetTransactions(string userId)
+        public async Task<string> GetTransactions(string branchId)
         {
+            var userId = Utils.Monohelper.UserId(_dbclient, branchId);
             _client = _clientSetup.GetMonoClient(_dbclient, userId);
-            var accountId = Utils.GetAccountIdClass.AccountId(_dbclient, userId);
-            var response = await _client.Accounts.GetTransactions(accountId);
+
+            var accountId = Utils.Monohelper.AccountId(_dbclient, branchId);
+            var response = await _client.Accounts.GetTransactions(accountId, null, null, null, 0, "debit", true);
             return JsonConvert.SerializeObject(response.Data.Transactions);
         }
 
@@ -95,19 +106,23 @@ namespace Bank_Apis.Services.Mono
             return JsonConvert.SerializeObject(response.Data);
         }
 
-        public async Task<string> ManualSync(string userId)
+        public async Task<string> ManualSync(string branchId)
         {
+            var userId = Utils.Monohelper.UserId(_dbclient, branchId);
             _client = _clientSetup.GetMonoClient(_dbclient, userId);
-            var accountId = Utils.GetAccountIdClass.AccountId(_dbclient, userId);
+
+            var accountId = Utils.Monohelper.AccountId(_dbclient, branchId);
             var response = await _client.Auth.SyncDataManually(accountId); ;
 
             return JsonConvert.SerializeObject(response.Data);
         }
 
-        public async Task<string> ReAuth(string userId)
+        public async Task<string> ReAuth(string branchId)
         {
+            var userId = Utils.Monohelper.UserId(_dbclient, branchId);
             _client = _clientSetup.GetMonoClient(_dbclient, userId);
-            var accountId = Utils.GetAccountIdClass.AccountId(_dbclient, userId);
+
+            var accountId = Utils.Monohelper.AccountId(_dbclient, branchId);
             var response = await _client.Auth.ReAuthorizeCode(accountId); ;
 
             return JsonConvert.SerializeObject(response.Data);
@@ -115,10 +130,12 @@ namespace Bank_Apis.Services.Mono
 
 
 
-        public async Task<string> UnlinkAccount(string userId)
+        public async Task<string> UnlinkAccount(string branchId)
         {
+            var userId = Utils.Monohelper.UserId(_dbclient, branchId);
             _client = _clientSetup.GetMonoClient(_dbclient, userId);
-            var accountId = Utils.GetAccountIdClass.AccountId(_dbclient, userId);
+
+            var accountId = Utils.Monohelper.AccountId(_dbclient, branchId);
             var response = await _client.Misc.UnlinkAccount(accountId);
 
             return JsonConvert.SerializeObject(response.Data);

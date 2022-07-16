@@ -7,7 +7,9 @@ namespace Bank_Apis.Model
         [Key]
         public string UserId { get; set; } = null;
 
-        public string MonoKey { get; set; } = null;
+        public string MonoPrivateKey { get; set; } = null;
+
+        public string MonoSecretKey { get; set; } = null;
 
         public string FlutterKey { get; set; } = null;
 

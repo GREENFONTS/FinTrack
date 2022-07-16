@@ -50,6 +50,7 @@ namespace Bank_Apis.Controllers
         [Authorize]
         public Branch GetBranch(string Id)
         {
+            Console.WriteLine(User.Identity.IsAuthenticated);
             var branch = _branchActions.GetBranch(Id);
             return branch;
         }
