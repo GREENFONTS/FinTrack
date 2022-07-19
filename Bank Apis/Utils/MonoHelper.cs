@@ -23,5 +23,15 @@ namespace Bank_Apis.Utils
             }
             return branch.UserId;
         }
+
+        public static string MonoKey(DatabaseContext _dbclient, string userId)
+        {
+            var serviceKeys = _dbclient.ServiceKeys.FirstOrDefault(x => x.UserId == userId);
+            if(serviceKeys == null)
+            {
+                return null;
+            }
+            return serviceKeys.MonoSecretKey;
+        }
     }
 }

@@ -58,28 +58,77 @@ namespace Bank_Apis.Controllers
         [HttpGet]
         [Route("AccountStatement/{branchId}")]
         [Authorize]
-        public async Task<string> GetAccountStatement(string branchId)
+        public async Task<IActionResult> GetAccountStatement(string branchId)
         {
             var accountStatement = await _monoActions.GetAccountStatement(branchId);
-            return accountStatement;
+            if (accountStatement == null)
+            {
+                ModelState.AddModelError("404", "Request Failed");
+                return NotFound(ModelState);
+            }
+            return Ok(new
+            {
+                accountStatement
+            }
+
+                    );
         }
 
         [HttpGet]
         [Route("AccountStatement/{branchId}/(period)")]
         [Authorize]
-        public async Task<string> GetAccountStatement(string branchId, int period)
+        public async Task<IActionResult> GetAccountStatement(string branchId, int period)
         {
             var accountStatement = await _monoActions.GetAccountStatement(branchId, period);
-            return accountStatement;
+            if(accountStatement == null)
+            {
+                ModelState.AddModelError("404", "Request Failed");
+                return NotFound(ModelState);
+            }
+            return Ok(new
+            {
+               accountStatement
+            }
+
+                    );
         }
 
         [HttpGet]
         [Route("Transactions/{branchId}")]
         [Authorize]
-        public async Task<string> GetTransactions(string branchId)
+        public async Task<IActionResult> GetTransactions(string branchId)
         {
             var transactions = await _monoActions.GetTransactions(branchId);
-            return transactions;
+            if (transactions == null)
+            {
+                ModelState.AddModelError("404", "Request Failed");
+                return NotFound(ModelState);
+            }
+            return Ok(new
+            {
+                transactions
+            }
+
+                    );
+        }
+
+        [HttpGet]
+        [Route("AllTransactions/{userId}")]
+        [Authorize]
+        public async Task<IActionResult> GetAllTransactions(string userId)
+        {
+            var transactions = await _monoActions.GetAllTransactions(userId);
+            if (transactions == null)
+            {
+                ModelState.AddModelError("404", "Request Failed");
+                return NotFound(ModelState);
+            }
+            return Ok(new
+            {
+                transactions
+            }
+
+                    );
         }
 
         [HttpGet]
@@ -102,12 +151,20 @@ namespace Bank_Apis.Controllers
         }
 
         [HttpGet]
-        [Route("/UnlinkAccount/{branchId}")]
+        [Route("UnlinkAccount/{branchId}")]
         [Authorize]
-        public async Task<string> UnlinkAccount(string branchId)
+        public async Task<IActionResult> UnlinkAccount(string branchId)
         {
-            var Income = await _monoActions.UnlinkAccount(branchId);
-            return Income;
+            var res = await _monoActions.UnlinkAccount(branchId);
+            if(res == null)
+            {
+                ModelState.AddModelError("404", "Request Failed");
+                return NotFound(ModelState);
+            }
+            return Ok(
+                new {
+                res});
+
         }
 
         [HttpGet]

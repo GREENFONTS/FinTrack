@@ -55,7 +55,7 @@ namespace Bank_Apis.Controllers
             return branch;
         }
 
-        [HttpPut("Id")]
+        [HttpPut("{id}")]
         [Authorize]
         public async Task<Branch> UpdateBranch(string Id, Branch branch)
         {
@@ -63,7 +63,7 @@ namespace Bank_Apis.Controllers
             return UpdatedBranch;
         }
 
-        [HttpDelete("Id")]
+        [HttpDelete("{id}")]
         [Authorize]
         public async Task<Branch> DeleteBranch(string Id)
         {
