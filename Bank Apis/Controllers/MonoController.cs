@@ -51,6 +51,7 @@ namespace Bank_Apis.Controllers
         [Authorize]
         public async Task<string> GetAccountInfos(string branchId)
         {
+            
             var accountInfo = await _monoActions.GetAccountInfo(branchId);
             return accountInfo;
         }
@@ -132,11 +133,11 @@ namespace Bank_Apis.Controllers
         }
 
         [HttpGet]
-        [Route("AccountIdentity/{branchId}")]
+        [Route("AccountIdentity/{userId}")]
         [Authorize]
-        public async Task<string> GetAccountIdentity(string branchId)
+        public async Task<string> GetAccountIdentity(string userId)
         {
-            var accountIdentity = await _monoActions.GetAccountIdentity(branchId);
+            var accountIdentity = await _monoActions.GetAccountIdentity(userId);
             return accountIdentity;
         }
 

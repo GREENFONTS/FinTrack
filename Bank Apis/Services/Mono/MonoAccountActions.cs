@@ -41,15 +41,20 @@ namespace Bank_Apis.Services.Mono
             return accountId;
         }
 
-        public async Task<string> GetAccountIdentity(string branchId)
+        public async Task<string> GetAccountIdentity(string userId)
         {
-            var userId = Utils.Monohelper.UserId(_dbclient, branchId);
             _client = _clientSetup.GetMonoClient(_dbclient, userId);
 
-            var accountId = Utils.Monohelper.AccountId(_dbclient, branchId);
+            var branch = _dbclient.Branches.FirstOrDefault(x => x.AccountId != "");
 
-            var response = await _client.Accounts.GetUserIdentity(accountId);
-            return JsonConvert.SerializeObject(response.Data);
+            if (branch != null)
+            {
+                var response = await _client.Accounts.GetUserIdentity(branch.AccountId);
+                return JsonConvert.SerializeObject(response.Data);
+            }
+            return null;
+
+            
         }
 
         public async Task<string> GetAccountInfo(string branchId)
@@ -127,7 +132,7 @@ namespace Bank_Apis.Services.Mono
 
             var monoSecret = Utils.Monohelper.MonoKey(_dbclient, userId);
             netClient.DefaultRequestHeaders.Add("mono-sec-key", monoSecret);
-            HttpResponseMessage res = await netClient.GetAsync($"{accountId}/transactions?limit=200");
+            HttpResponseMessage res = await netClient.GetAsync($"{accountId}/transactions?limit=1000");
             if (res.IsSuccessStatusCode)
             {
                 var data = await res.Content.ReadAsStringAsync();
@@ -208,7 +213,7 @@ namespace Bank_Apis.Services.Mono
             netClient.DefaultRequestHeaders.Add("mono-sec-key", monoSecret);
             foreach (string account in accountIds)
             {                
-                HttpResponseMessage res = await netClient.GetAsync($"{account}/transactions?limit=200");
+                HttpResponseMessage res = await netClient.GetAsync($"{account}/transactions?limit=1000");
                 if (res.IsSuccessStatusCode)
                 {
                     var data = await res.Content.ReadAsStringAsync();
