@@ -82,12 +82,19 @@ namespace Bank_Apis.Controllers
             return NotFound(ModelState);
         }
 
-        [HttpPut("Id")]
+        [HttpPost("/user/{Id}")]
         [Authorize]
-        public async Task<User> UpdateUser(string Id, User user)
+        public async Task<IActionResult> UpdateUser(string Id, User user)
         {
             var UpdatedUser = await _userActions.UpdateUser(Id, user);
-            return UpdatedUser;
+            if(UpdatedUser == null)
+            {
+                ModelState.AddModelError("404", "User not Found");
+                return NotFound(ModelState);
+            }
+            return Ok(new {
+                UpdatedUser
+            });
         }
 
         [HttpPost]
@@ -110,7 +117,7 @@ namespace Bank_Apis.Controllers
 
         [HttpGet]
         [Route("verifyToken")]
-        public bool VerifyToken(string token)
+        public User VerifyToken(string token)
         {
             var res = _userActions.VerifyToken(token);
             return res;

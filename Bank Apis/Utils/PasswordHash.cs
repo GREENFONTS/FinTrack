@@ -18,7 +18,7 @@ namespace Bank_Apis.Utils
 
             string hashPassword = Convert.ToBase64String(hashBytes);
 
-            Console.WriteLine(hashPassword);
+            Console.WriteLine(string.Format("$MYHASH$V1${0}${1}", 10000, hashPassword));
 
 
             return string.Format("$MYHASH$V1${0}${1}", 10000, hashPassword); ;

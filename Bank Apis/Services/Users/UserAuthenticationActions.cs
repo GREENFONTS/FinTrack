@@ -72,9 +72,13 @@ namespace Bank_Apis.Services.Users
             }
             else
             {
+                user.Password = currentUser.Password;
+                user.Email = currentUser.Email;                
                 _dbClient.Entry(currentUser).CurrentValues.SetValues(user);
                 await _dbClient.SaveChangesAsync();
-                return user;
+                currentUser = _dbClient.Users.SingleOrDefault(x => x.Id == Id);
+                Console.WriteLine(currentUser.Password);
+                return currentUser;
             }
 
         }
@@ -107,18 +111,27 @@ namespace Bank_Apis.Services.Users
 
         }
 
-        public bool VerifyToken(string token)
+        public User VerifyToken(string token)
         {
             var classInstance = new VerifyToken(_configuration);
 
             var res = classInstance.verifyToken(token);
 
-            return res;
+            if(res != null)
+            {
+                var user = _dbClient.Users.FirstOrDefault((x) => x.Id == res);
+                return user;
+            }
+            return null;
         }
 
         public string GetServiceKey(string Id)
         {
             var serviceKey = _dbClient.ServiceKeys.Find(Id);
+            if(serviceKey == null)
+            {
+                return "";
+            }
 
             return serviceKey.MonoPrivateKey;
         }

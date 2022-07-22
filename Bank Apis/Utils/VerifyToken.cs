@@ -13,7 +13,7 @@ namespace Bank_Apis.Utils
         {
             _configuration = iconfiguration;
         }
-        public bool verifyToken(string token)
+        public string verifyToken(string token)
         {
             var validationParameters = new TokenValidationParameters()
             {
@@ -30,17 +30,18 @@ namespace Bank_Apis.Utils
             {
                 tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
                 var expiryDate = validatedToken.ValidTo;
+                var userId = tokenHandler.ReadJwtToken(token).Claims.FirstOrDefault(claim => claim.Type == "UserId").Value;
                 var currentDate = DateTime.Now;
                 var value = DateTime.Compare(currentDate, expiryDate);
                 if(value > 0)
                 {
-                    return false;
+                    return null;
                 }
-                return true;
+                return userId;
             }
             catch(Exception e) {
                 Console.WriteLine(e.Message);
-                return false;
+                return null;
             }
 
         }
