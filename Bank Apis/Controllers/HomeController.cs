@@ -117,10 +117,18 @@ namespace Bank_Apis.Controllers
 
         [HttpGet]
         [Route("verifyToken")]
-        public User VerifyToken(string token)
+        public IActionResult VerifyToken(string token)
         {
             var res = _userActions.VerifyToken(token);
-            return res;
+            if(res != null)
+            {
+                var monoKey = _userActions.GetServiceKey(res.Id);
+                return Ok(new { 
+                res,
+                monoKey});
+
+            }
+            return NotFound();
         }
 
     }
