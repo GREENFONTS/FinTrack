@@ -82,7 +82,7 @@ namespace Bank_Apis.Controllers
             return NotFound(ModelState);
         }
 
-        [HttpPost("/user/{Id}")]
+        [HttpPost("user/{Id}")]
         [Authorize]
         public async Task<IActionResult> UpdateUser(string Id, User user)
         {
@@ -119,16 +119,20 @@ namespace Bank_Apis.Controllers
         [Route("verifyToken")]
         public IActionResult VerifyToken(string token)
         {
-            var res = _userActions.VerifyToken(token);
-            if(res != null)
+            var user = _userActions.VerifyToken(token);
+            if(user != null)
             {
-                var monoKey = _userActions.GetServiceKey(res.Id);
+                var monoKey = _userActions.GetServiceKey(user.Id);
                 return Ok(new { 
-                res,
+                user,
                 monoKey});
 
             }
-            return NotFound();
+            user = null;
+            return Ok(new
+            {
+                user,
+            });
         }
 
     }
